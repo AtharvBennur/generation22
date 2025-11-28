@@ -33,7 +33,7 @@ export const generateEssay = async (topic, style = 'academic', length = 'medium'
     const response = await axios.post(
       GROQ_API_URL,
       {
-        model: 'llama-3.1-70b-versatile', // Using Llama 3.1 70B model
+        model: 'llama3-70b-8192', // Using Llama 3.1 70B model
         messages: [
           {
             role: 'system',
@@ -73,7 +73,7 @@ export const refineEssay = async (essay, instructions) => {
     const response = await axios.post(
       GROQ_API_URL,
       {
-        model: 'llama-3.1-70b-versatile',
+        model: 'llama3-70b-8192',
         messages: [
           {
             role: 'system',
