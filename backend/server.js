@@ -17,13 +17,21 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // ============================================
-// AUTO INSTALL & SETUP
+// AUTO INSTALL & SETUP (Local Development Only)
 // ============================================
 async function setupAndStart() {
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  if (isProduction) {
+    // Production mode - just start the server
+    console.log('🚀 Starting AI-Assign-Eval in production mode...')
+    startServer()
+    return
+  }
+  
+  // Development mode - auto install and launch frontend
   console.log('\n╔════════════════════════════════════════════════════════════════╗')
-  console.log('║                                                                ║')
   console.log('║          🚀 AI-Assign-Eval - Auto Setup & Launch              ║')
-  console.log('║                                                                ║')
   console.log('╚════════════════════════════════════════════════════════════════╝\n')
 
   const frontendPath = path.join(__dirname, '..', 'frontend')
@@ -58,8 +66,6 @@ async function setupAndStart() {
   }
 
   console.log('\n🎯 Starting servers...\n')
-  
-  // Start the main server
   startServer()
 }
 
@@ -271,13 +277,17 @@ app.use((err, req, res, next) => {
 // SERVER START FUNCTION
 // ============================================
 function startServer() {
-  app.listen(PORT, () => {
-    console.log(`🚀 Backend API running on: http://localhost:${PORT}`)
-    console.log(`📝 Mode: DEMO (In-memory storage)`)
+  const isProduction = process.env.NODE_ENV === 'production'
+  
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 Backend API running on port ${PORT}`)
+    console.log(`📝 Mode: ${isProduction ? 'PRODUCTION' : 'DEMO'} (In-memory storage)`)
     console.log(`🔑 AI API Key: ${process.env.GROQ_API_KEY ? '✅ Configured' : '❌ Missing'}\n`)
     
-    // Launch frontend
-    launchFrontend()
+    // Only launch frontend in development
+    if (!isProduction) {
+      launchFrontend()
+    }
   })
 }
 
